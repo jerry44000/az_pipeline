@@ -1,0 +1,30 @@
+trigger:
+- main  # Déclencher la pipeline lors de la mise à jour de la branche principale
+
+prerequisites:
+- script: echo "Initial Setup"
+
+pool:
+  vmImage: 'ubuntu-latest'  # Utilisez l'image de machine virtuelle appropriée
+
+jobs:
+- job: CheckContent
+  steps:
+  - checkout: self
+
+  - script: python verify_content.py
+    displayName: 'Vérifier le contenu'
+    failOnStderr: true
+
+  - script: |
+      echo "##vso[task.setvariable variable=ContentIsValid]$(cat sample_file.json)"
+    displayName: 'Récupérer le contenu du fichier JSON'
+
+- job: PublishArtifact
+  dependsOn: CheckContent
+  condition: eq(dependencies.CheckContent.outputs['CheckContent.ContentIsValid'], 'true')
+  steps:
+  - script: echo "Content is TRUE. Publishing artifact..."
+    displayName: 'Publication de l'artefact'
+    
+   
