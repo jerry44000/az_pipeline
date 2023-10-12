@@ -16,7 +16,14 @@ def check_json_content(filename):
 
     return False
 
+# if __name__ == "__main__":
+#     file_to_check = "sample_file.json"
+#     result = check_json_content(file_to_check)
+#     print(f"Content is : {result}")
+
 if __name__ == "__main__":
     file_to_check = "sample_file.json"
     result = check_json_content(file_to_check)
     print(f"Content is : {result}")
+    if result:
+        print("##vso[task.setvariable variable=content]true")
